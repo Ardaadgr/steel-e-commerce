@@ -9,10 +9,10 @@ export default async function AdminDashboard() {
     orderBy: { createdAt: 'desc' }
   });
 
-  const totalRevenue = orders.filter(o => o.status === "PROCESSING" || o.status === "DELIVERED" || o.status === "SHIPPED")
-                             .reduce((acc, order) => acc + order.totalAmount, 0);
+  const totalRevenue = orders.filter((o: any) => o.status === "PROCESSING" || o.status === "DELIVERED" || o.status === "SHIPPED")
+                             .reduce((acc: number, order: any) => acc + order.totalAmount, 0);
   
-  const successfulOrders = orders.filter(o => o.status !== "PENDING" && o.status !== "CANCELLED").length;
+  const successfulOrders = orders.filter((o: any) => o.status !== "PENDING" && o.status !== "CANCELLED").length;
 
   return (
     <div className="space-y-8">
