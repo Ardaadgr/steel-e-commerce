@@ -57,7 +57,7 @@ export default async function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {orders.slice(0, 5).map(order => (
+              {orders.slice(0, 5).map((order: any) => (
                 <div key={order.id} className="flex items-center justify-between border-b border-zinc-800 pb-4">
                   <div>
                     <p className="font-medium">{order.customerName}</p>
