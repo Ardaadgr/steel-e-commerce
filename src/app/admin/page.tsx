@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, DollarSign, CreditCard } from "lucide-react";
 
-const prisma = new PrismaClient();
+export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
   const orders = await prisma.order.findMany({
