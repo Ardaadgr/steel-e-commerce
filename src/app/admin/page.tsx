@@ -45,7 +45,7 @@ export default async function AdminDashboard() {
             <Activity className="w-4 h-4 text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{orders.filter(o => o.status === "PENDING").length} Adet</div>
+            <div className="text-2xl font-bold">{orders.filter((o: any) => o.status === "PENDING").length} Adet</div>
           </CardContent>
         </Card>
       </div>
