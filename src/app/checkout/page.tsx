@@ -103,12 +103,12 @@ function CheckoutContent() {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      {/* Form Section */}
-      <div className="lg:col-span-7 space-y-6">
-        <h1 className="text-3xl font-black uppercase tracking-tight">Güvenli Ödeme</h1>
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="w-full">
+      <h1 className="text-3xl font-black text-white uppercase tracking-tight mb-8">Güvenli Ödeme</h1>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Form Section */}
+        <div className="lg:col-span-7 space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
           <Card className="bg-zinc-900 border-zinc-800 text-white">
             <CardHeader>
               <CardTitle className="text-xl">İletişim Bilgileri</CardTitle>
@@ -260,6 +260,7 @@ function CheckoutContent() {
             </div>
           </CardFooter>
         </Card>
+      </div>
       </div>
     </div>
   );
