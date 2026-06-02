@@ -10,15 +10,46 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 
 export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
+  const [iyzicoHtml, setIyzicoHtml] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate Iyzico/PayTR API request
-    setTimeout(() => {
+    
+    try {
+      const response = await fetch("/api/iyzico/initialize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          price: 25000,
+          buyer: {
+            firstName: (document.getElementById("firstName") as HTMLInputElement).value,
+            lastName: (document.getElementById("lastName") as HTMLInputElement).value,
+            email: (document.getElementById("email") as HTMLInputElement).value,
+            phone: (document.getElementById("phone") as HTMLInputElement).value,
+            address: (document.getElementById("address") as HTMLInputElement).value,
+            city: (document.getElementById("city") as HTMLInputElement).value,
+          }
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.status === "success" && data.checkoutFormContent) {
+        setIyzicoHtml(data.checkoutFormContent);
+        setTimeout(() => {
+          const script = document.createElement("script");
+          script.innerHTML = data.checkoutFormContent.replace(/<script.*?>(.*?)<\/script>/s, "$1").match(/<script.*?>(.*?)<\/script>/s)?.[1] || data.checkoutFormContent.split('<script type="text/javascript">')[1]?.split('</script>')[0] || '';
+          if(script.innerHTML) document.body.appendChild(script);
+        }, 100);
+      } else {
+        alert("Ödeme başlatılamadı: " + (data.errorMessage || "Bilinmeyen Hata"));
+      }
+    } catch (err) {
+      alert("Bağlantı hatası oluştu.");
+    } finally {
       setLoading(false);
-      alert("Ödeme entegrasyonu (Faz 4) başarıyla tetiklendi!");
-    }, 2000);
+    }
   };
 
   return (
@@ -86,13 +117,20 @@ export default function CheckoutPage() {
                 </CardContent>
               </Card>
 
-              <Button 
-                type="submit" 
-                className="w-full bg-red-600 hover:bg-red-700 text-white h-14 text-lg font-bold"
-                disabled={loading}
-              >
-                {loading ? "İşleniyor..." : "Ödemeye Geç"}
-              </Button>
+              {!iyzicoHtml ? (
+                <Button 
+                  type="submit" 
+                  className="w-full bg-red-600 hover:bg-red-700 text-white h-14 text-lg font-bold"
+                  disabled={loading}
+                >
+                  {loading ? "İyzico'ya Bağlanılıyor..." : "Ödemeye Geç"}
+                </Button>
+              ) : (
+                <div className="bg-white rounded-xl p-2 w-full min-h-[400px]">
+                  <div dangerouslySetInnerHTML={{ __html: iyzicoHtml }} />
+                  <div id="iyzipay-checkout-form" className="responsive"></div>
+                </div>
+              )}
             </form>
           </div>
 
