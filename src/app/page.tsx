@@ -31,7 +31,7 @@ export default function Home() {
           <div className="absolute -bottom-48 -right-48 w-96 h-96 bg-red-600 rounded-full blur-[150px] opacity-20" />
         </div>
 
-        <div className="container relative z-20 px-4 md:px-6 flex flex-col items-start mt-20">
+        <div className="container mx-auto relative z-20 px-4 md:px-6 flex flex-col items-start mt-20">
           <div className="inline-flex items-center rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-sm text-red-500 mb-6">
             <Activity className="w-4 h-4 mr-2" />
             <span className="font-medium">Profesyonel İzometrik Sistem</span>
@@ -66,7 +66,7 @@ export default function Home() {
 
       {/* About Us */}
       <section id="about" className="py-24 bg-black">
-        <div className="container px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <div>
               <h2 className="text-4xl md:text-5xl font-black text-white mb-6 uppercase tracking-tighter">Hakkımızda</h2>
@@ -88,7 +88,7 @@ export default function Home() {
 
       {/* Feature Highlights */}
       <section id="features" className="py-24 bg-zinc-950 border-t border-white/5">
-        <div className="container px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="flex flex-col items-center text-center">
               <div className="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-6">
@@ -117,7 +117,7 @@ export default function Home() {
 
       {/* Products Detail */}
       <section id="products" className="py-24 bg-zinc-950 border-t border-white/5">
-        <div className="container px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black text-white mb-4 uppercase tracking-tighter">Sistem Paketleri</h2>
             <p className="text-gray-400 max-w-2xl mx-auto">İhtiyacınıza uygun profesyonel çözümler.</p>
@@ -161,7 +161,7 @@ export default function Home() {
 
       {/* Footer & Contact */}
       <footer id="contact" className="bg-black py-16 border-t border-zinc-900">
-        <div className="container px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-gray-400">
             <div>
               <div className="text-2xl font-extrabold tracking-tighter text-white mb-6">
