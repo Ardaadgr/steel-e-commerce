@@ -14,7 +14,7 @@ export async function POST(request: Request) {
       return NextResponse.redirect(`${appUrl}/checkout?error=no_token`);
     }
 
-    return new Promise((resolve) => {
+    return new Promise<Response>((resolve) => {
       // The token itself isn't enough, we must retrieve the payment result from Iyzico
       iyzipay.checkoutForm.retrieve({
         locale: "tr",
