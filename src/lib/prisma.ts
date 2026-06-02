@@ -1,8 +1,14 @@
 import 'server-only';
-import { PrismaClient } from '@prisma/client';
+import type { PrismaClient as PrismaClientType } from '@prisma/client';
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
+let PrismaClient: any;
+if (typeof window === "undefined") {
+  // Bypass Turbopack's static bundler by forcing a runtime CommonJS require
+  PrismaClient = require('@prisma/client').PrismaClient;
+}
 
-export const prisma = globalForPrisma.prisma || new PrismaClient();
+const globalForPrisma = global as unknown as { prisma: PrismaClientType };
+
+export const prisma: PrismaClientType = globalForPrisma.prisma || new PrismaClient();
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
