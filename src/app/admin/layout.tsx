@@ -17,12 +17,16 @@ export default function AdminLayout({
         </div>
         
         <nav className="flex-1 py-6 px-4 space-y-2">
-          <Link href="/admin" className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-zinc-900 text-white hover:bg-zinc-800 transition-colors">
+          <Link href="/admin" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-zinc-900 transition-colors">
             <LayoutDashboard className="w-5 h-5 text-red-500" />
             <span className="font-medium">Dashboard</span>
           </Link>
-          <Link href="/admin/orders" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-zinc-900 transition-colors">
+          <Link href="/admin/products" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-zinc-900 transition-colors">
             <ShoppingCart className="w-5 h-5" />
+            <span className="font-medium">Ürünler</span>
+          </Link>
+          <Link href="/admin/orders" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-zinc-900 transition-colors">
+            <Activity className="w-5 h-5" />
             <span className="font-medium">Siparişler</span>
           </Link>
           <Link href="/admin/settings" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-zinc-900 transition-colors">
