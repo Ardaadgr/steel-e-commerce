@@ -32,18 +32,32 @@ model Product {
 }
 
 model Order {
-  id            String      @id @default(cuid())
-  customerEmail String
-  customerName  String
-  customerPhone String
-  address       String
-  city          String
-  totalAmount   Float
-  status        String      @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
-  iyzicoId      String?     // Iyzico veya PayTR islem ID'si
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  items         OrderItem[]
+  id              String      @id @default(cuid())
+  customerEmail   String
+  customerName    String
+  customerPhone   String
+  
+  // Teslimat Adresi
+  address         String
+  city            String
+  district        String?
+  
+  // Fatura Bilgileri (Türkiye Standartları)
+  invoiceType     String      @default("INDIVIDUAL") // INDIVIDUAL veya CORPORATE
+  tcId            String?     // Bireysel fatura için
+  companyName     String?     // Kurumsal fatura için
+  taxOffice       String?     // Kurumsal fatura için
+  taxId           String?     // Kurumsal fatura için
+  billingAddress  String?
+  billingCity     String?
+  billingDistrict String?
+  
+  totalAmount     Float
+  status          String      @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+  iyzicoId        String?     // Iyzico veya PayTR islem ID'si
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  items           OrderItem[]
 }
 
 model OrderItem {

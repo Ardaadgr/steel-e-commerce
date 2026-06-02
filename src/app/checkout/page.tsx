@@ -17,6 +17,7 @@ function CheckoutContent() {
   const [loading, setLoading] = useState(false);
   const [iyzicoHtml, setIyzicoHtml] = useState<string | null>(null);
   const [differentBilling, setDifferentBilling] = useState(false);
+  const [invoiceType, setInvoiceType] = useState<"INDIVIDUAL" | "CORPORATE">("INDIVIDUAL");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +38,16 @@ function CheckoutContent() {
         district: (form.elements.namedItem("billingDistrict") as HTMLInputElement).value,
       } : shippingAddress;
 
+      const invoiceDetails = invoiceType === "CORPORATE" ? {
+        type: "CORPORATE",
+        companyName: (form.elements.namedItem("companyName") as HTMLInputElement).value,
+        taxOffice: (form.elements.namedItem("taxOffice") as HTMLInputElement).value,
+        taxId: (form.elements.namedItem("taxId") as HTMLInputElement).value,
+      } : {
+        type: "INDIVIDUAL",
+        tcId: (form.elements.namedItem("tcId") as HTMLInputElement)?.value || "11111111111",
+      };
+
       const response = await fetch("/api/iyzico/initialize", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -49,7 +60,8 @@ function CheckoutContent() {
             phone: (form.elements.namedItem("phone") as HTMLInputElement).value,
             ...shippingAddress
           },
-          billingAddress
+          billingAddress,
+          invoiceDetails
         })
       });
 
@@ -189,6 +201,48 @@ function CheckoutContent() {
                 </div>
               </CardContent>
             )}
+            
+            {/* Invoice Details Section */}
+            <CardContent className="space-y-4 pt-0 border-t border-zinc-800 mt-4 pt-4">
+              <div className="flex space-x-4 mb-4">
+                <Button 
+                  type="button"
+                  variant="outline" 
+                  className={`flex-1 ${invoiceType === "INDIVIDUAL" ? 'bg-red-600 text-white border-red-600 hover:bg-red-700 hover:text-white' : 'bg-transparent border-gray-600 text-gray-400 hover:text-white'}`}
+                  onClick={() => setInvoiceType("INDIVIDUAL")}
+                >Bireysel Fatura</Button>
+                <Button 
+                  type="button"
+                  variant="outline" 
+                  className={`flex-1 ${invoiceType === "CORPORATE" ? 'bg-red-600 text-white border-red-600 hover:bg-red-700 hover:text-white' : 'bg-transparent border-gray-600 text-gray-400 hover:text-white'}`}
+                  onClick={() => setInvoiceType("CORPORATE")}
+                >Kurumsal Fatura</Button>
+              </div>
+
+              {invoiceType === "CORPORATE" ? (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="companyName">Firma / Şirket Adı</Label>
+                    <Input id="companyName" name="companyName" required className="bg-zinc-950 border-zinc-800 focus:border-red-500" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="taxOffice">Vergi Dairesi</Label>
+                      <Input id="taxOffice" name="taxOffice" required className="bg-zinc-950 border-zinc-800 focus:border-red-500" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="taxId">Vergi Numarası</Label>
+                      <Input id="taxId" name="taxId" required className="bg-zinc-950 border-zinc-800 focus:border-red-500" />
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-2">
+                  <Label htmlFor="tcId">T.C. Kimlik No (Zorunlu Değil)</Label>
+                  <Input id="tcId" name="tcId" className="bg-zinc-950 border-zinc-800 focus:border-red-500" placeholder="11111111111" />
+                </div>
+              )}
+            </CardContent>
           </Card>
 
           {!iyzicoHtml ? (

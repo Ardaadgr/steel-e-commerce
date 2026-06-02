@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { iyzipay } from "@/lib/iyzico";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   try {
@@ -13,15 +16,29 @@ export async function POST(request: Request) {
     }
 
     return new Promise((resolve) => {
+      // The token itself isn't enough, we must retrieve the payment result from Iyzico
       iyzipay.checkoutForm.retrieve({
         locale: "tr",
-        conversationId: "123456789",
         token: token
-      }, (err: any, result: any) => {
+      }, async (err: any, result: any) => {
         if (err || result.status !== "success" || result.paymentStatus !== "SUCCESS") {
+          // Payment Failed
+          if (result && result.conversationId) {
+             await prisma.order.update({
+               where: { id: result.conversationId },
+               data: { status: "CANCELLED", iyzicoId: result.paymentId || null }
+             }).catch(() => {}); // ignore db errors here
+          }
           resolve(NextResponse.redirect(`${appUrl}/checkout?status=failed`));
         } else {
-          // TODO: Update Prisma Order status to 'PROCESSING' here
+          // Payment Success! 
+          // result.conversationId is our Prisma Order ID that we sent during initialize
+          if (result.conversationId) {
+            await prisma.order.update({
+              where: { id: result.conversationId },
+              data: { status: "PROCESSING", iyzicoId: result.paymentId }
+            });
+          }
           resolve(NextResponse.redirect(`${appUrl}/checkout?status=success`));
         }
       });

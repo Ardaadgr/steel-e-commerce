@@ -1,18 +1,47 @@
 import { NextResponse } from "next/server";
 import { iyzipay } from "@/lib/iyzico";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { buyer, price, conversationId, billingAddress } = body;
+    const { buyer, price, billingAddress, invoiceDetails } = body;
+
+    // 1. Create the Pending Order in the Database with all invoice details
+    const order = await prisma.order.create({
+      data: {
+        customerEmail: buyer.email || "test@test.com",
+        customerName: `${buyer.firstName} ${buyer.lastName}`,
+        customerPhone: buyer.phone || "+905350000000",
+        address: buyer.address || "Teslimat Adresi Girilmedi",
+        city: buyer.city || "Istanbul",
+        district: buyer.district || "",
+        totalAmount: price,
+        status: "PENDING",
+        
+        // Invoice Details
+        invoiceType: invoiceDetails?.type || "INDIVIDUAL",
+        tcId: invoiceDetails?.tcId || null,
+        companyName: invoiceDetails?.companyName || null,
+        taxOffice: invoiceDetails?.taxOffice || null,
+        taxId: invoiceDetails?.taxId || null,
+        
+        // Billing Address
+        billingAddress: billingAddress?.address || buyer.address || "Fatura Adresi Girilmedi",
+        billingCity: billingAddress?.city || buyer.city || "Istanbul",
+        billingDistrict: billingAddress?.district || "",
+      }
+    });
 
     const requestData = {
       locale: "tr",
-      conversationId: conversationId || "123456789",
+      conversationId: order.id, // We use the database Order ID to track it
       price: price.toString(),
       paidPrice: price.toString(),
       currency: "TRY",
-      basketId: "B67832",
+      basketId: order.id,
       paymentGroup: "PRODUCT",
       callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/iyzico/callback`,
       enabledInstallments: [2, 3, 6, 9, 12],
@@ -22,7 +51,7 @@ export async function POST(request: Request) {
         surname: buyer.lastName || "Kullanıcı",
         gsmNumber: buyer.phone || "+905350000000",
         email: buyer.email || "test@test.com",
-        identityNumber: "74300864791",
+        identityNumber: invoiceDetails?.tcId || "74300864791",
         lastLoginDate: "2023-01-01 15:12:09",
         registrationDate: "2023-01-01 15:12:09",
         registrationAddress: buyer.address || "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1",
@@ -39,7 +68,7 @@ export async function POST(request: Request) {
         zipCode: "34732"
       },
       billingAddress: {
-        contactName: `${buyer.firstName} ${buyer.lastName}`,
+        contactName: invoiceDetails?.companyName || `${buyer.firstName} ${buyer.lastName}`,
         city: billingAddress?.city || buyer.city || "Istanbul",
         country: "Turkey",
         address: billingAddress?.address || buyer.address || "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1",
