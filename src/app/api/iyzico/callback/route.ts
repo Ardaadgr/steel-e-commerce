@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { iyzipay } from "@/lib/iyzico";
 import { PrismaClient } from "@prisma/client";
+import { sendInvoiceEmail } from "@/lib/email";
 
 const prisma = new PrismaClient();
 
@@ -34,10 +35,17 @@ export async function POST(request: Request) {
           // Payment Success! 
           // result.conversationId is our Prisma Order ID that we sent during initialize
           if (result.conversationId) {
-            await prisma.order.update({
+            const updatedOrder = await prisma.order.update({
               where: { id: result.conversationId },
               data: { status: "PROCESSING", iyzicoId: result.paymentId }
             });
+            
+            // Send automatic receipt email
+            try {
+              await sendInvoiceEmail(updatedOrder);
+            } catch (emailErr) {
+              console.error("Failed to send email after success", emailErr);
+            }
           }
           resolve(NextResponse.redirect(`${appUrl}/checkout?status=success`));
         }
