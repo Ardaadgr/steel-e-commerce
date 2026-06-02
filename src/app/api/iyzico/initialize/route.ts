@@ -84,7 +84,7 @@ export async function POST(request: Request) {
     };
 
     return new Promise<Response>((resolve) => {
-      iyzipay.checkoutFormInitialize.create(requestData, (err: any, result: any) => {
+      iyzipay.checkoutFormInitialize.create(requestData as any, (err: any, result: any) => {
         if (err) {
           resolve(NextResponse.json({ status: "error", error: err }, { status: 500 }));
         } else {

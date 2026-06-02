@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     return new Promise<Response>((resolve) => {
       // The token itself isn't enough, we must retrieve the payment result from Iyzico
       iyzipay.checkoutForm.retrieve({
-        locale: "tr",
+        locale: "TR",
         token: token
       }, async (err: any, result: any) => {
         if (err || result.status !== "success" || result.paymentStatus !== "SUCCESS") {

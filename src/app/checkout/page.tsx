@@ -71,7 +71,7 @@ function CheckoutContent() {
         setIyzicoHtml(data.checkoutFormContent);
         setTimeout(() => {
           const script = document.createElement("script");
-          script.innerHTML = data.checkoutFormContent.replace(/<script.*?>(.*?)<\/script>/s, "$1").match(/<script.*?>(.*?)<\/script>/s)?.[1] || data.checkoutFormContent.split('<script type="text/javascript">')[1]?.split('</script>')[0] || '';
+          script.innerHTML = data.checkoutFormContent.replace(/<script.*?>(.*?)<\/script>/, "$1").match(/<script.*?>(.*?)<\/script>/)?.[1] || data.checkoutFormContent.split('<script type="text/javascript">')[1]?.split('</script>')[0] || '';
           if(script.innerHTML) document.body.appendChild(script);
         }, 100);
       } else {
