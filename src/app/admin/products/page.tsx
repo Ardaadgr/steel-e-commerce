@@ -72,7 +72,7 @@ export default async function ProductsPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-800">
-                    {products.map(product => (
+                    {products.map((product: any) => (
                       <tr key={product.id} className="hover:bg-zinc-800/50 transition-colors">
                         <td className="px-6 py-4">
                           <img src={product.images[0] || "https://placehold.co/100x100"} alt={product.name} className="w-12 h-12 object-cover rounded-md" />
