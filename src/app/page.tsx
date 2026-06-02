@@ -15,7 +15,7 @@ export default function Home() {
           <Link href="#store" className="hover:text-white transition-colors">Mağaza</Link>
           <Link href="#contact" className="hover:text-white transition-colors">İletişim</Link>
         </nav>
-        <Link href="#store" className="bg-white/10 hover:bg-white/20 text-white px-5 py-2 rounded-full text-sm font-medium transition-all backdrop-blur-md border border-white/10">
+        <Link href="/checkout" className="bg-white/10 hover:bg-white/20 text-white px-5 py-2 rounded-full text-sm font-medium transition-all backdrop-blur-md border border-white/10">
           Sipariş Ver
         </Link>
       </header>
@@ -47,7 +47,7 @@ export default function Home() {
           
           <div className="mt-10 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Link 
-              href="#store" 
+              href="/checkout" 
               className="group flex items-center justify-center bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all duration-300"
             >
               Hemen İncele
