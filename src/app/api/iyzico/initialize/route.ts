@@ -4,7 +4,7 @@ import { iyzipay } from "@/lib/iyzico";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { buyer, price, conversationId } = body;
+    const { buyer, price, conversationId, billingAddress } = body;
 
     const requestData = {
       locale: "tr",
@@ -40,9 +40,9 @@ export async function POST(request: Request) {
       },
       billingAddress: {
         contactName: `${buyer.firstName} ${buyer.lastName}`,
-        city: buyer.city || "Istanbul",
+        city: billingAddress?.city || buyer.city || "Istanbul",
         country: "Turkey",
-        address: buyer.address || "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1",
+        address: billingAddress?.address || buyer.address || "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1",
         zipCode: "34732"
       },
       basketItems: [

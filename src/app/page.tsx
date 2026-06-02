@@ -11,8 +11,9 @@ export default function Home() {
           STEEL<span className="text-red-600">.</span>
         </div>
         <nav className="hidden md:flex space-x-8 text-sm font-medium text-gray-300">
+          <Link href="#about" className="hover:text-white transition-colors">Hakkımızda</Link>
+          <Link href="#products" className="hover:text-white transition-colors">Ürünler</Link>
           <Link href="#features" className="hover:text-white transition-colors">Özellikler</Link>
-          <Link href="#store" className="hover:text-white transition-colors">Mağaza</Link>
           <Link href="#contact" className="hover:text-white transition-colors">İletişim</Link>
         </nav>
         <Link href="/checkout" className="bg-white/10 hover:bg-white/20 text-white px-5 py-2 rounded-full text-sm font-medium transition-all backdrop-blur-md border border-white/10">
@@ -54,11 +55,33 @@ export default function Home() {
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link 
-              href="#features" 
+              href="#products" 
               className="flex items-center justify-center bg-transparent border border-gray-600 hover:border-gray-400 text-white px-8 py-4 rounded-lg font-medium text-lg transition-all duration-300"
             >
               Detayları Gör
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* About Us */}
+      <section id="about" className="py-24 bg-black">
+        <div className="container px-4 md:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-6 uppercase tracking-tighter">Hakkımızda</h2>
+              <div className="w-20 h-2 bg-red-600 mb-8" />
+              <p className="text-gray-400 text-lg leading-relaxed mb-6">
+                STEEL Mekanik Spor Sistemleri, geleneksel ağırlık antrenmanlarının yaratabileceği sakatlık risklerini ortadan kaldırırken, kas aktivasyonunu maksimize etmeyi hedefleyen profesyonel bir girişimdir.
+              </p>
+              <p className="text-gray-400 text-lg leading-relaxed">
+                Rehabilitasyon merkezlerinden profesyonel spor kulüplerine kadar geniş bir yelpazede kullanılan sistemimiz, Türk mühendisleri tarafından yüksek dayanımlı endüstriyel çelik kullanılarak üretilmektedir.
+              </p>
+            </div>
+            <div className="relative h-[400px] bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden flex items-center justify-center">
+              <span className="text-zinc-700 font-bold tracking-widest uppercase">[ Görsel Alanı ]</span>
+              <div className="absolute inset-0 bg-gradient-to-tr from-red-600/10 to-transparent" />
+            </div>
           </div>
         </div>
       </section>
@@ -91,6 +114,83 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Products Detail */}
+      <section id="products" className="py-24 bg-zinc-950 border-t border-white/5">
+        <div className="container px-4 md:px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 uppercase tracking-tighter">Sistem Paketleri</h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">İhtiyacınıza uygun profesyonel çözümler.</p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Standard */}
+            <div className="bg-black border border-zinc-800 rounded-2xl p-8 flex flex-col">
+              <h3 className="text-2xl font-bold text-white mb-2">Standart Paket</h3>
+              <p className="text-gray-400 mb-6">Ev kullanımı ve kişisel stüdyolar için.</p>
+              <div className="text-4xl font-black text-white mb-8">₺18.500</div>
+              <ul className="space-y-4 mb-8 flex-1 text-gray-300">
+                <li className="flex items-center"><Activity className="w-5 h-5 text-red-500 mr-3"/> Temel İzometrik İstasyon</li>
+                <li className="flex items-center"><Activity className="w-5 h-5 text-red-500 mr-3"/> 5 Farklı Direnç Açısı</li>
+                <li className="flex items-center"><Activity className="w-5 h-5 text-red-500 mr-3"/> 2 Yıl Garanti</li>
+              </ul>
+              <Link href="/checkout" className="block w-full py-4 text-center rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white font-bold transition-colors">
+                Satın Al
+              </Link>
+            </div>
+
+            {/* Pro */}
+            <div className="bg-zinc-900 border-2 border-red-600 rounded-2xl p-8 flex flex-col relative overflow-hidden">
+              <div className="absolute top-6 right-6 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase">En Çok Tercih Edilen</div>
+              <h3 className="text-2xl font-bold text-white mb-2">Profesyonel Paket</h3>
+              <p className="text-gray-400 mb-6">Spor salonları ve klinikler için tam donanım.</p>
+              <div className="text-4xl font-black text-white mb-8">₺25.000</div>
+              <ul className="space-y-4 mb-8 flex-1 text-gray-300">
+                <li className="flex items-center"><Activity className="w-5 h-5 text-red-500 mr-3"/> Gelişmiş İzometrik İstasyon</li>
+                <li className="flex items-center"><Activity className="w-5 h-5 text-red-500 mr-3"/> 15 Farklı Direnç Açısı</li>
+                <li className="flex items-center"><Activity className="w-5 h-5 text-red-500 mr-3"/> Dijital Kuvvet Ölçer Ekran</li>
+                <li className="flex items-center"><Activity className="w-5 h-5 text-red-500 mr-3"/> Ömür Boyu Kasa Garantisi</li>
+              </ul>
+              <Link href="/checkout" className="block w-full py-4 text-center rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold transition-colors">
+                Hemen Sipariş Ver
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer & Contact */}
+      <footer id="contact" className="bg-black py-16 border-t border-zinc-900">
+        <div className="container px-4 md:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-gray-400">
+            <div>
+              <div className="text-2xl font-extrabold tracking-tighter text-white mb-6">
+                STEEL<span className="text-red-600">.</span>
+              </div>
+              <p>Maksimum kuvvet, sıfır risk. Yeni nesil izometrik antrenman sistemleri ile limitlerinizi aşın.</p>
+            </div>
+            <div>
+              <h4 className="text-white font-bold mb-6 uppercase tracking-wider">İletişim</h4>
+              <ul className="space-y-3">
+                <li>info@steelequipment.com</li>
+                <li>+90 (555) 123 45 67</li>
+                <li>Maslak Mah. Büyükdere Cad. No:1, Sarıyer / İstanbul</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-bold mb-6 uppercase tracking-wider">Hızlı Bağlantılar</h4>
+              <ul className="space-y-3">
+                <li><Link href="#about" className="hover:text-red-500 transition-colors">Hakkımızda</Link></li>
+                <li><Link href="#products" className="hover:text-red-500 transition-colors">Ürünler</Link></li>
+                <li><Link href="/checkout" className="hover:text-red-500 transition-colors">Mağaza</Link></li>
+              </ul>
+            </div>
+          </div>
+          <div className="mt-16 pt-8 border-t border-zinc-900 text-center text-sm">
+            <p>&copy; {new Date().getFullYear()} STEEL Equipment. Tüm hakları saklıdır.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
