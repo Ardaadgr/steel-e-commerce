@@ -15,8 +15,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // Default dark theme added to html tag for that premium dark look
-    <html lang="tr" className="dark">
+    // Default theme is now Light mode (Professional Blue & Slate)
+    <html lang="tr">
       <body className={`${inter.className} bg-background text-foreground antialiased selection:bg-primary selection:text-primary-foreground`}>
         {children}
       </body>
