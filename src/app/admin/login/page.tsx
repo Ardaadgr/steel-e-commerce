@@ -93,6 +93,13 @@ export default function AdminLoginPage() {
                   placeholder="••••••••"
                 />
               </div>
+              <div className="flex items-center justify-end mt-2">
+                <div className="text-sm">
+                  <a href="/admin/forgot-password" className="font-semibold text-blue-600 hover:text-blue-500">
+                    Şifremi unuttum
+                  </a>
+                </div>
+              </div>
             </div>
 
             {error && (
