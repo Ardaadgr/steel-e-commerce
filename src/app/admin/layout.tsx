@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Activity, LayoutDashboard, ShoppingCart, Settings, LogOut } from "lucide-react";
+import { Activity, LayoutDashboard, ShoppingCart, Settings } from "lucide-react";
+import LogoutButton from "./LogoutButton";
 
 export default function AdminLayout({
   children,
@@ -36,10 +37,7 @@ export default function AdminLayout({
         </nav>
 
         <div className="p-4 border-t border-slate-200">
-          <Link href="/" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 hover:text-blue-700 hover:bg-blue-50 transition-colors w-full">
-            <LogOut className="w-5 h-5" />
-            <span className="font-medium">Çıkış Yap</span>
-          </Link>
+          <LogoutButton />
         </div>
       </aside>
 

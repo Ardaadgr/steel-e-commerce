@@ -2,8 +2,14 @@
 
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
+import { getAdminSession } from "@/lib/auth"
 
 export async function addProduct(formData: FormData) {
+  const session = await getAdminSession()
+  if (!session || session.user.role !== 'ADMIN') {
+    throw new Error('Unauthorized')
+  }
+
   const name = formData.get("name") as string
   const description = formData.get("description") as string
   const price = parseFloat(formData.get("price") as string)
@@ -21,6 +27,11 @@ export async function addProduct(formData: FormData) {
 }
 
 export async function deleteProduct(id: string) {
+  const session = await getAdminSession()
+  if (!session || session.user.role !== 'ADMIN') {
+    throw new Error('Unauthorized')
+  }
+
   await prisma.product.delete({ where: { id } })
   revalidatePath("/admin/products")
   revalidatePath("/")
