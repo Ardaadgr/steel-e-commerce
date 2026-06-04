@@ -104,10 +104,8 @@ export default async function Home() {
             </div>
           </div>
         </div>
-      </section>
-
       {/* Products Detail (Dynamic via Prisma) */}
-      <section id="products" className="py-24 bg-white border-t border-slate-200">
+      <section id="products" className="py-24 bg-slate-50 border-t border-slate-200">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 uppercase tracking-tighter">Sistem Paketleri</h2>

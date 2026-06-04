@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useCart } from "@/store/useCart";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 
-function CheckoutContent() {
+function CheckoutContent({ user }: { user?: any }) {
   const searchParams = useSearchParams();
   const status = searchParams.get("status");
   const { items, getTotal, clearCart } = useCart();
@@ -19,7 +19,7 @@ function CheckoutContent() {
   const [loading, setLoading] = useState(false);
   const [iyzicoHtml, setIyzicoHtml] = useState<string | null>(null);
   const [differentBilling, setDifferentBilling] = useState(false);
-  const [invoiceType, setInvoiceType] = useState<"INDIVIDUAL" | "CORPORATE">("INDIVIDUAL");
+  const [invoiceType, setInvoiceType] = useState<"INDIVIDUAL" | "CORPORATE">(user?.invoiceType || "INDIVIDUAL");
 
   // On successful mount, if we just came back from a successful payment, clear the cart.
   useEffect(() => {
@@ -170,20 +170,20 @@ function CheckoutContent() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">Ad</Label>
-                  <Input id="firstName" name="firstName" required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
+                  <Input id="firstName" name="firstName" defaultValue={user?.firstName} required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Soyad</Label>
-                  <Input id="lastName" name="lastName" required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
+                  <Input id="lastName" name="lastName" defaultValue={user?.lastName} required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">E-Posta</Label>
-                <Input id="email" name="email" type="email" required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
+                <Input id="email" name="email" type="email" defaultValue={user?.email} required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Telefon</Label>
-                <Input id="phone" name="phone" type="tel" required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
+                <Input id="phone" name="phone" type="tel" defaultValue={user?.phone} required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
               </div>
             </CardContent>
           </Card>
@@ -195,16 +195,16 @@ function CheckoutContent() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="address">Açık Adres</Label>
-                <Input id="address" name="address" required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
+                <Input id="address" name="address" defaultValue={user?.address} required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="city">İl</Label>
-                  <Input id="city" name="city" required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
+                  <Input id="city" name="city" defaultValue={user?.city} required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="district">İlçe</Label>
-                  <Input id="district" name="district" required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
+                  <Input id="district" name="district" defaultValue={user?.district} required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
                 </div>
               </div>
             </CardContent>
@@ -264,23 +264,23 @@ function CheckoutContent() {
                 <>
                   <div className="space-y-2">
                     <Label htmlFor="companyName">Firma / Şirket Adı</Label>
-                    <Input id="companyName" name="companyName" required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
+                    <Input id="companyName" name="companyName" defaultValue={user?.companyName} required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="taxOffice">Vergi Dairesi</Label>
-                      <Input id="taxOffice" name="taxOffice" required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
+                      <Input id="taxOffice" name="taxOffice" defaultValue={user?.taxOffice} required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="taxId">Vergi Numarası</Label>
-                      <Input id="taxId" name="taxId" required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
+                      <Input id="taxId" name="taxId" defaultValue={user?.taxId} required className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" />
                     </div>
                   </div>
                 </>
               ) : (
                 <div className="space-y-2">
                   <Label htmlFor="tcId">T.C. Kimlik No (Zorunlu Değil)</Label>
-                  <Input id="tcId" name="tcId" className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" placeholder="11111111111" />
+                  <Input id="tcId" name="tcId" defaultValue={user?.tcId} className="bg-white border-slate-300 focus:border-blue-500 shadow-sm" placeholder="11111111111" />
                 </div>
               )}
             </CardContent>
@@ -365,7 +365,35 @@ function CheckoutContent() {
   );
 }
 
-export default function CheckoutPage() {
+import { getCustomerSession } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+
+export default async function CheckoutPage() {
+  const session = await getCustomerSession();
+  let user = null;
+  
+  if (session) {
+    user = await prisma.user.findUnique({
+      where: { id: session.user.id }
+    });
+  }
+
+  // To pass user data to Client Component, we serialize it
+  const serializedUser = user ? {
+    firstName: user.name?.split(' ')[0] || '',
+    lastName: user.name?.split(' ').slice(1).join(' ') || '',
+    email: user.email || '',
+    phone: user.phone || '',
+    address: user.address || '',
+    city: user.city || '',
+    district: user.district || '',
+    invoiceType: user.invoiceType || 'INDIVIDUAL',
+    companyName: user.companyName || '',
+    taxOffice: user.taxOffice || '',
+    taxId: user.taxId || '',
+    tcId: user.tcId || '',
+  } : null;
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 pt-32 pb-12 px-4 md:px-6">
       <div className="max-w-6xl mx-auto">
@@ -374,7 +402,7 @@ export default function CheckoutPage() {
           Geri Dön
         </Link>
         <Suspense fallback={<div className="text-slate-500">Yükleniyor...</div>}>
-          <CheckoutContent />
+          <CheckoutContent user={serializedUser} />
         </Suspense>
       </div>
     </div>
