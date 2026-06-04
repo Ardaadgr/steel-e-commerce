@@ -32,6 +32,30 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Protect /account route
+  if (request.nextUrl.pathname.startsWith('/account')) {
+    const sessionCookie = request.cookies.get('customer_session')?.value
+    
+    if (!sessionCookie) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+
+    try {
+      const { payload } = await jwtVerify(sessionCookie, key, {
+        algorithms: ['HS256'],
+      })
+      
+      const user = payload.user as any
+      if (!user || user.role !== 'CUSTOMER') {
+        return NextResponse.redirect(new URL('/login', request.url))
+      }
+      
+      return NextResponse.next()
+    } catch (error) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+  }
+
   // Also protect API routes that mutate data (example: /api/products, /api/orders)
   // For now we assume Server Actions are used, but if you have APIs protect them here.
 
@@ -39,5 +63,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/account/:path*'],
 }

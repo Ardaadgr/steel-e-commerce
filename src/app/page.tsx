@@ -12,21 +12,7 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900">
-      {/* Navigation */}
-      <header className="absolute top-0 w-full z-50 flex items-center justify-between px-6 py-4 md:px-12 md:py-6 bg-white/80 backdrop-blur-md border-b border-slate-200">
-        <div className="text-2xl font-extrabold tracking-tighter text-slate-900">
-          STEEL<span className="text-blue-600">.</span>
-        </div>
-        <nav className="hidden md:flex space-x-8 text-sm font-medium text-slate-600">
-          <Link href="#about" className="hover:text-blue-600 transition-colors">Hakkımızda</Link>
-          <Link href="#products" className="hover:text-blue-600 transition-colors">Ürünler</Link>
-          <Link href="#features" className="hover:text-blue-600 transition-colors">Özellikler</Link>
-          <Link href="#contact" className="hover:text-blue-600 transition-colors">İletişim</Link>
-        </nav>
-        <Link href="#products" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full text-sm font-medium transition-all shadow-md">
-          Mağazaya Git
-        </Link>
-      </header>
+
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-50 pt-20">

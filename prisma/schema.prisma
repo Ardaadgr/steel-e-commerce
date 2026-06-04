@@ -11,9 +11,18 @@ model User {
   email     String   @unique
   password  String
   name      String?
-  role      String   @default("ADMIN")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role        String   @default("ADMIN")
+  phone       String?
+  address     String?
+  city        String?
+  district    String?
+  invoiceType String   @default("INDIVIDUAL")
+  companyName String?
+  taxOffice   String?
+  taxId       String?
+  tcId        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Product {

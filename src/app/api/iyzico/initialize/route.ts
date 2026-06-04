@@ -5,9 +5,9 @@ import { prisma } from "@/lib/prisma";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { buyer, price, billingAddress, invoiceDetails } = body;
+    const { buyer, price, billingAddress, invoiceDetails, cartItems } = body;
 
-    // 1. Create the Pending Order in the Database with all invoice details
+    // 1. Create the Pending Order in the Database with all invoice details and order items
     const order = await prisma.order.create({
       data: {
         customerEmail: buyer.email || "test@test.com",
@@ -30,12 +30,21 @@ export async function POST(request: Request) {
         billingAddress: billingAddress?.address || buyer.address || "Fatura Adresi Girilmedi",
         billingCity: billingAddress?.city || buyer.city || "Istanbul",
         billingDistrict: billingAddress?.district || "",
+
+        // Order Items
+        items: {
+          create: cartItems.map((item: any) => ({
+            productId: item.id,
+            quantity: item.quantity,
+            price: item.unitPrice
+          }))
+        }
       }
     });
 
     const requestData = {
       locale: "tr",
-      conversationId: order.id, // We use the database Order ID to track it
+      conversationId: order.id, 
       price: price.toString(),
       paidPrice: price.toString(),
       currency: "TRY",
@@ -72,15 +81,13 @@ export async function POST(request: Request) {
         address: billingAddress?.address || buyer.address || "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1",
         zipCode: "34732"
       },
-      basketItems: [
-        {
-          id: "BI101",
-          name: "STEEL İzometrik Sistem",
-          category1: "Spor Ekipmanları",
-          itemType: "PHYSICAL",
-          price: price.toString()
-        }
-      ]
+      basketItems: cartItems.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        category1: item.category1 || "Spor Ekipmanları",
+        itemType: "PHYSICAL",
+        price: item.price.toString()
+      }))
     };
 
     return new Promise<Response>((resolve) => {

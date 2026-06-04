@@ -20,9 +20,7 @@ export async function decrypt(input: string): Promise<any> {
 }
 
 export async function setAdminSession(user: { id: string, email: string, role: string }) {
-  // Await cookies() in Next.js 15+
   const cookieStore = await cookies();
-  
   const expires = new Date(Date.now() + 24 * 60 * 60 * 1000)
   const session = await encrypt({ user, expires })
 
@@ -50,6 +48,43 @@ export async function getAdminSession() {
 export async function clearAdminSession() {
   const cookieStore = await cookies();
   cookieStore.set('admin_session', '', {
+    expires: new Date(0),
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+  })
+}
+
+export async function setCustomerSession(user: { id: string, email: string, role: string }) {
+  const cookieStore = await cookies();
+  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 1 week
+  const session = await encrypt({ user, expires })
+
+  cookieStore.set('customer_session', session, {
+    expires,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+  })
+}
+
+export async function getCustomerSession() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get('customer_session')?.value
+  if (!session) return null
+  
+  try {
+    return await decrypt(session)
+  } catch (error) {
+    return null
+  }
+}
+
+export async function clearCustomerSession() {
+  const cookieStore = await cookies();
+  cookieStore.set('customer_session', '', {
     expires: new Date(0),
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',

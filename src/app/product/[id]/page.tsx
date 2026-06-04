@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, CheckCircle2, ShieldCheck, Truck, Star, CreditCard, ChevronDown } from "lucide-react"
 import ProductGallery from "@/components/ProductGallery"
+import { AddToCartButton } from "@/components/AddToCartButton"
 
 export const dynamic = 'force-dynamic';
 
@@ -20,21 +21,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   // Use Isophit-inspired premium layout
   return (
     <div className="min-h-screen bg-white text-slate-900 pb-24">
-      {/* Top Navigation Bar */}
-      <div className="border-b border-slate-200 bg-white sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-          <Link href="/#products" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Geri Dön
-          </Link>
-          <div className="text-xl font-extrabold tracking-tighter text-slate-900">
-            STEEL<span className="text-blue-600">.</span>
-          </div>
-          <div className="w-20" /> {/* Spacer to center the logo */}
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 md:px-8 pt-8 md:pt-12">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 pt-32 md:pt-40">
+        <Link href="/#products" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors mb-6">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Geri Dön
+        </Link>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           
           {/* Left Column: Image Gallery (60%) */}
@@ -90,15 +81,14 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               {/* Add to Cart CTA */}
               <div className="mb-10">
                 {product.stock > 0 ? (
-                  <Link 
-                    href={`/checkout?productId=${product.id}&name=${encodeURIComponent(product.name)}&price=${product.price}&image=${encodeURIComponent(product.images[0] || "")}`} 
-                    className="w-full block"
-                  >
-                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 px-8 rounded-xl shadow-lg shadow-blue-600/20 transition-all transform hover:-translate-y-1 text-lg flex items-center justify-center">
-                      Satın Al
-                      <ArrowLeft className="w-5 h-5 ml-2 rotate-180" />
-                    </button>
-                  </Link>
+                  <AddToCartButton 
+                    product={{
+                      id: product.id,
+                      name: product.name,
+                      price: product.price,
+                      image: product.images[0] || ""
+                    }} 
+                  />
                 ) : (
                   <button disabled className="w-full bg-slate-200 text-slate-500 font-bold py-5 px-8 rounded-xl cursor-not-allowed text-lg text-center">
                     Tükendi - Stokta Yok

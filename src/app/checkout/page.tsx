@@ -1,29 +1,44 @@
 "use client";
 
 import { useState, Suspense, useEffect } from "react";
-import { ArrowLeft, ShieldCheck, CreditCard, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, ShieldCheck, CreditCard, CheckCircle2, XCircle, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useCart } from "@/store/useCart";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 
 function CheckoutContent() {
   const searchParams = useSearchParams();
   const status = searchParams.get("status");
-  const productName = searchParams.get("name") || "STEEL İzometrik Sistem";
-  const productPrice = searchParams.get("price") ? parseFloat(searchParams.get("price") as string) : 25000;
-  const productImage = searchParams.get("image") || "";
+  const { items, getTotal, clearCart } = useCart();
 
   const [loading, setLoading] = useState(false);
   const [iyzicoHtml, setIyzicoHtml] = useState<string | null>(null);
   const [differentBilling, setDifferentBilling] = useState(false);
   const [invoiceType, setInvoiceType] = useState<"INDIVIDUAL" | "CORPORATE">("INDIVIDUAL");
 
+  // On successful mount, if we just came back from a successful payment, clear the cart.
+  useEffect(() => {
+    if (status === "success") {
+      clearCart();
+    }
+  }, [status, clearCart]);
+
+  const productPrice = getTotal();
+  const taxAmount = productPrice * 0.2;
+  const totalPrice = productPrice + taxAmount;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (items.length === 0) {
+      alert("Sepetiniz boş.");
+      return;
+    }
+    
     setLoading(true);
     
     try {
@@ -56,6 +71,14 @@ function CheckoutContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           price: productPrice,
+          cartItems: items.map(item => ({
+            id: item.id,
+            name: item.name,
+            category1: "Gym Equipment",
+            price: item.price * item.quantity,
+            quantity: item.quantity,
+            unitPrice: item.price
+          })),
           buyer: {
             firstName: (form.elements.namedItem("firstName") as HTMLInputElement).value,
             lastName: (form.elements.namedItem("lastName") as HTMLInputElement).value,
@@ -112,6 +135,21 @@ function CheckoutContent() {
         </p>
         <Link href="/checkout">
           <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg font-bold">Tekrar Dene</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  if (items.length === 0 && !status) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <ShoppingCart className="w-24 h-24 text-slate-300 mb-6" />
+        <h1 className="text-3xl font-black text-slate-900 uppercase mb-4">Sepetiniz Boş</h1>
+        <p className="text-slate-500 text-lg max-w-md mx-auto mb-8">
+          Ödeme yapabilmek için sepetinize ürün eklemelisiniz.
+        </p>
+        <Link href="/#products">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg font-bold">Alışverişe Başla</Button>
         </Link>
       </div>
     );
@@ -272,19 +310,19 @@ function CheckoutContent() {
             <CardTitle className="text-xl">Sipariş Özeti</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex gap-4">
-              <div className="w-24 h-24 bg-slate-100 rounded-lg border border-slate-200 flex items-center justify-center overflow-hidden">
-                {productImage ? (
-                  <img src={productImage} alt={productName} className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-slate-400 text-xs font-bold uppercase">Görsel</span>
-                )}
-              </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-lg">{productName}</h3>
-                <p className="text-sm text-slate-500">Standart Teslimat</p>
-              </div>
-              <div className="font-bold text-lg">₺{productPrice.toLocaleString("tr-TR")}</div>
+            <div className="divide-y divide-slate-100 max-h-80 overflow-y-auto pr-2">
+              {items.map((item) => (
+                <div key={item.id} className="flex gap-4 py-4">
+                  <div className="w-20 h-20 bg-slate-100 rounded-lg border border-slate-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-sm line-clamp-2">{item.name}</h3>
+                    <p className="text-xs text-slate-500 mt-1">Adet: {item.quantity}</p>
+                    <p className="font-bold text-sm text-blue-600 mt-1">₺{(item.price * item.quantity).toLocaleString("tr-TR")}</p>
+                  </div>
+                </div>
+              ))}
             </div>
             
             <div className="space-y-3 pt-6 border-t border-slate-200">
@@ -298,7 +336,7 @@ function CheckoutContent() {
               </div>
               <div className="flex justify-between text-slate-500">
                 <span>Vergi (KDV %20)</span>
-                <span>₺{(productPrice * 0.2).toLocaleString("tr-TR")}</span>
+                <span>₺{taxAmount.toLocaleString("tr-TR")}</span>
               </div>
             </div>
 
@@ -307,7 +345,7 @@ function CheckoutContent() {
                 <p className="text-sm text-slate-500">Genel Toplam</p>
                 <p className="text-xs text-slate-400">Vergiler Dahil</p>
               </div>
-              <span className="text-3xl font-black text-slate-900">₺{(productPrice + (productPrice * 0.2)).toLocaleString("tr-TR")}</span>
+              <span className="text-3xl font-black text-slate-900">₺{totalPrice.toLocaleString("tr-TR")}</span>
             </div>
           </CardContent>
           <CardFooter className="flex-col gap-4 bg-slate-50 rounded-b-xl border-t border-slate-200 mt-6 py-6">
@@ -329,7 +367,7 @@ function CheckoutContent() {
 
 export default function CheckoutPage() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 py-12 px-4 md:px-6">
+    <div className="min-h-screen bg-slate-50 text-slate-900 pt-32 pb-12 px-4 md:px-6">
       <div className="max-w-6xl mx-auto">
         <Link href="/" className="inline-flex items-center text-slate-500 hover:text-blue-600 mb-8 transition-colors">
           <ArrowLeft className="w-4 h-4 mr-2" />
