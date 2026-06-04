@@ -104,6 +104,8 @@ export default async function Home() {
             </div>
           </div>
         </div>
+      </section>
+
       {/* Products Detail (Dynamic via Prisma) */}
       <section id="products" className="py-24 bg-slate-50 border-t border-slate-200">
         <div className="container mx-auto px-4 md:px-6">
